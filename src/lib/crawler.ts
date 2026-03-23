@@ -72,17 +72,19 @@ export async function crawlSite(
       results.push(analysis)
       onProgress?.(results.length, Math.min(results.length + queue.length, maxPages), item.url)
 
-      // Enqueue discovered links that haven't been visited or queued
+      // Enqueue discovered links that haven't been visited or queued.
+      // Adding to `visited` immediately prevents the same URL from being
+      // enqueued multiple times (e.g. when it appears in discoveredLinks
+      // more than once, or is found by concurrent pages in the same batch).
       if (item.depth < maxDepth) {
-        const queuedUrls = new Set(queue.map((q) => q.url))
         for (const link of discoveredLinks) {
           const normalized = normalizeUrl(link)
           if (
             !visited.has(normalized) &&
-            !queuedUrls.has(normalized) &&
             normalized.startsWith(origin) &&
             results.length + queue.length < maxPages
           ) {
+            visited.add(normalized)
             queue.push({ url: normalized, depth: item.depth + 1 })
           }
         }

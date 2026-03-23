@@ -32,7 +32,16 @@ export async function POST(
 
     // Run the crawl synchronously (for simplicity; limit pages to keep it fast)
     try {
-      const pageResults = await crawlSite(site.url, { maxPages, maxDepth })
+      const rawResults = await crawlSite(site.url, { maxPages, maxDepth })
+
+      // Deduplicate by URL as a safety net against any edge-case duplicates
+      // in the crawler (duplicate URLs cause a unique constraint violation).
+      const seenUrls = new Set<string>()
+      const pageResults = rawResults.filter((p) => {
+        if (seenUrls.has(p.url)) return false
+        seenUrls.add(p.url)
+        return true
+      })
 
       // Persist results in a single transaction
       await prisma.$transaction(async (tx) => {
