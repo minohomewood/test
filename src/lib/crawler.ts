@@ -36,6 +36,12 @@ export async function crawlSite(
     // Take up to CONCURRENCY items from the front of the queue
     const batch = queue.splice(0, CONCURRENCY)
 
+    // Pre-mark all batch items as visited so concurrent pages in the same
+    // batch don't re-enqueue each other's URLs.
+    for (const item of batch) {
+      visited.add(item.url)
+    }
+
     const batchResults = await Promise.allSettled(
       batch.map(({ url, depth }) => analyzePage(url, origin, depth, maxDepth))
     )
@@ -43,8 +49,6 @@ export async function crawlSite(
     for (let i = 0; i < batchResults.length; i++) {
       const item = batch[i]
       const result = batchResults[i]
-
-      visited.add(item.url)
 
       if (result.status === 'rejected') {
         results.push({
