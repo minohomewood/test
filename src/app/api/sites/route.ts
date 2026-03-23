@@ -31,8 +31,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const { url, name } = body as { url?: string; name?: string }
+    let body: { url?: string; name?: string }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    }
+    const { url, name } = body
 
     if (!url) {
       return NextResponse.json({ error: 'url is required' }, { status: 400 })
