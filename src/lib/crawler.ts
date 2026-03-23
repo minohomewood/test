@@ -5,8 +5,8 @@ import { checkLinks } from './analyzers/links'
 import { checkContent } from './analyzers/content'
 import type { PageAnalysis } from '@/types'
 
-const DEFAULT_MAX_PAGES = 20
-const DEFAULT_MAX_DEPTH = 2
+const DEFAULT_MAX_PAGES = 50
+const DEFAULT_MAX_DEPTH = 3
 const REQUEST_TIMEOUT_MS = 15_000
 const CONCURRENCY = 3
 

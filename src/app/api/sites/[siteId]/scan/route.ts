@@ -17,8 +17,8 @@ export async function POST(
       maxPages?: number
       maxDepth?: number
     }
-    const maxPages = Math.min(body.maxPages ?? 20, 50)
-    const maxDepth = Math.min(body.maxDepth ?? 2, 3)
+    const maxPages = Math.min(body.maxPages ?? 50, 50)
+    const maxDepth = Math.min(body.maxDepth ?? 3, 3)
 
     // Create a scan record
     const scan = await prisma.scan.create({
