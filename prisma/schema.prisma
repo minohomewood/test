@@ -26,8 +26,8 @@ model Scan {
   finishedAt   DateTime?
   status       String    @default("pending") // pending, running, completed, failed
   pagesScanned Int       @default(0)
-  maxDepth     Int       @default(2)
-  maxPages     Int       @default(20)
+  maxDepth     Int       @default(3)
+  maxPages     Int       @default(50)
   error        String?
   pages        Page[]
 }
